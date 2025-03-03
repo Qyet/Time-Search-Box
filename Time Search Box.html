@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- 
+        Version: 1.0
+        Features: 
+        - Flip clock animation with Oswald font
+        - Integrated search box with validation
+        - Real-time datetime display
+        Author: Qyet & AI Assistant
+        版本号：1.0
+        界面特点：
+        - 使用Oswald字体的翻页时钟动画
+        - 带验证的搜索框组件
+        - 实时时间日期显示
+        作者：Qyet & AI助手
+    -->
+    <title>Time Search Box</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Oswald 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* 专业时钟样式 */
+        .flip-container {
+            display: inline-block;
+            position: relative;
+            width: 90px;
+            height: 90px;
+            perspective: 1000px;
+        }
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+        .flip-top, .flip-bottom {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+            background: #1e293b;
+            color: white;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            font-size: 3rem;
+        }
+        .flip-top {
+            top: 0;
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            transform-origin: bottom center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4px;
+        }
+        .flip-bottom {
+            bottom: 0;
+            border-radius: 0 0 20px 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 4px;
+        }
+        /* 分体数字布局 */
+        .top-text, .bottom-text {
+            position: relative;
+            line-height: 0.75;
+            transform: translateZ(1px);
+        }
+        .flip-top .top-text {
+            transform: translateY(50%);
+        }
+        .flip-bottom .bottom-text {
+            transform: translateY(-73%);
+        }
+        /* 背面预载数字 */
+        .flip-back {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotateX(180deg);
+            backface-visibility: hidden;
+            background: #1e293b;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+                /* 输入框样式 */
+        .seamless-input {
+            border-radius: 24px !important;
+            padding-right: 100px !important;
+        }
+        .seamless-button {
+            border-radius: 24px !important;
+            margin-right: 2px;
+            width: 80px;
+            transition: width 0.2s ease;
+        }
+        /* 翻页动画 */
+        .flip-active .flip-top {
+            animation: flip 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes flip {
+            0% { 
+                transform: rotateX(0deg);
+                z-index: 2;
+            }
+            50% { 
+                transform: rotateX(-90deg);
+                background: #1e293b;
+            }
+            100% { 
+                transform: rotateX(-180deg);
+                z-index: 1;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white flex flex-col items-center justify-center">
+    <!-- 翻页时钟 -->
+    <div class="mb-12 text-center space-y-4">
+        <div id="date" class="text-2xl text-gray-500 font-medium">2025-03-03</div>
+        <div class="flex gap-2 justify-center">
+            <div class="flip-container">
+                <div class="flip-card" id="hours">
+                    <div class="flip-top">
+                        <div class="top-text current-top">23</div>
+                        <div class="flip-back">
+                            <div class="top-text next-top">23</div>
+                        </div>
+                    </div>
+                    <div class="flip-bottom">
+                        <div class="bottom-text current-bottom">23</div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-4xl self-center text-gray-700">:</div>
+            <div class="flip-container">
+                <div class="flip-card" id="minutes">
+                    <div class="flip-top">
+                        <div class="top-text current-top">59</div>
+                        <div class="flip-back">
+                            <div class="top-text next-top">59</div>
+                        </div>
+                    </div>
+                    <div class="flip-bottom">
+                        <div class="bottom-text current-bottom">59</div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-4xl self-center text-gray-700">:</div>
+            <div class="flip-container">
+                <div class="flip-card" id="seconds">
+                    <div class="flip-top">
+                        <div class="top-text current-top">59</div>
+                        <div class="flip-back">
+                            <div class="top-text next-top">59</div>
+                        </div>
+                    </div>
+                    <div class="flip-bottom">
+                        <div class="bottom-text current-bottom">59</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索容器（保持原有实现） -->
+<div class="relative w-[584px] max-w-[90vw]">
+        <div class="relative">
+            <input 
+                type="text" 
+                id="searchInput"
+                placeholder="Please input"
+                class="seamless-input w-full h-[44px] px-6 py-3 border 
+                       shadow-sm focus:shadow-md transition-all
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                       text-gray-900 placeholder-gray-400"
+            >
+            <button 
+                id="submitBtn"
+                class="seamless-button absolute right-1 top-1/2 -translate-y-1/2
+                       h-[36px] bg-blue-600 hover:bg-blue-700 text-white 
+                       font-medium transition-all whitespace-nowrap 
+                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onclick="handleSubmit()"
+            >
+                Submit
+            </button>
+            <div id="errorMsg" 
+                 class="hidden absolute left-0 right-0 -bottom-6 
+                        text-red-500 text-sm text-center shake">
+                请输入搜索内容
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 专业时钟逻辑
+        function updateClock() {
+            const now = new Date();
+            
+            // 更新日期
+            document.getElementById('date').textContent = 
+                now.toISOString().split('T')[0];
+            
+            // 更新时钟
+            const pad = n => String(n).padStart(2, '0');
+            const hours = pad(now.getHours());
+            const minutes = pad(now.getMinutes());
+            const seconds = pad(now.getSeconds());
+            
+            updateDigit('hours', hours);
+            updateDigit('minutes', minutes);
+            updateDigit('seconds', seconds);
+        }
+
+        function updateDigit(id, newValue) {
+            const card = document.getElementById(id);
+            const currentTop = card.querySelector('.current-top');
+            const nextTop = card.querySelector('.next-top');
+            const currentBottom = card.querySelector('.current-bottom');
+            
+            if (currentTop.textContent !== newValue) {
+                // 预载下一个数字
+                nextTop.textContent = newValue;
+                
+                // 触发动画
+                card.classList.add('flip-active');
+                setTimeout(() => {
+                    currentTop.textContent = newValue;
+                    currentBottom.textContent = newValue;
+                    card.classList.remove('flip-active');
+                }, 800);
+            }
+        }
+
+        // 初始化
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
