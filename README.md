@@ -1,6 +1,6 @@
 # Time-Search-Box
 一个翻页时钟的搜索界面HTML
-
+![Time Search Box](https://github.com/user-attachments/assets/e4d2e4ba-654a-400f-9c95-021e1a2e7309)
  界面特点：
  - 翻页时钟动画
  - 带验证的搜索框组件
